@@ -1,0 +1,42 @@
+from django.urls import path
+from .views import (teacher_login,get_csrf_token,teacher_logout,get_class_students,
+                    get_teacher_attendance,
+                    mark_attendance,get_all_student_attendance,
+                    get_all_student_progress,
+                    create_progress,get_daily_routine,
+                    add_timetable, mark_notification_as_read,get_all_classs_with_students,
+                    get_notification,submit_notification_replay,
+                    get_my_replies,add_class_wise_notification,get_your_class_notification,
+                    delete_your_clas_notification,get_class_notification_viewer,get_terms,get_student_by_id,
+                    get_attendance_by_class,get_class_teacher,mark_class_completed,get_students_attendance_by_date
+                    )
+
+
+urlpatterns = [
+    path('csrf-token/',get_csrf_token,name='csrf-token'),
+    path('login/',teacher_login,name='teacher-login'),
+    path('logout/',teacher_logout,name='teacher-logout'),
+    path('class-students/<int:class_id>/',get_class_students , name='class-students'),
+    path('attendance-data/<int:teacher_id>/', get_teacher_attendance, name='get_attendance_data'),
+    path('mark-all-std-attendnace/',mark_attendance,name='mark-std-attendance'),
+    path('all-students-attendance/', get_all_student_attendance, name='students_attendance'),
+    path('get-student-progress/<int:student_id>/', get_all_student_progress, name='all_students_progress'),
+    path('create-progress-report/', create_progress, name='create_progress_report'),
+    path('add-timetable/<int:class_id>/',add_timetable,name='add-timetable'),
+    path('notification/', get_notification, name='notification'),
+    path('read-staff-notification/<int:notification_id>/<int:teacher_id>/', mark_notification_as_read, name='mark-notification'),
+    path('submit-staff-replay/', submit_notification_replay, name='replay-notification'),
+    path('teacher-replies/<int:teacher_id>/', get_my_replies, name='teacher-replies'),
+    path('add-class-notification/<int:class_id>/', add_class_wise_notification, name='add-cls-notifi'),
+    path('get-class-notification/<int:class_id>/', get_your_class_notification, name='get-cls-notifi'),
+    path('delete-class-notification/<int:notification_id>/', delete_your_clas_notification, name='get-cls-notifi'),
+    path('get-class-notification-viewer/<int:notifification_id>/',get_class_notification_viewer , name='get-cls-notifi-viewer'),
+    path('get-daily-routine/<int:student_id>/',get_daily_routine , name='daily-routine'),
+    path('terms/',get_terms , name='terms'),
+    path('student_info_by_id/<int:student_id>/', get_student_by_id, name='students-info'),
+    path('get-class-with-stds/',get_all_classs_with_students,name='all-class'),
+    path('get-attendnace-by-class/<int:class_id>/', get_attendance_by_class, name='attendance-class'),
+    path('class-teacher/<int:class_id>/', get_class_teacher, name='get_student_progress'),
+    path('mark-class-status/<int:class_id>/', mark_class_completed, name='class-status'),
+    path('attendance-by-date-class/<int:class_id>/', get_students_attendance_by_date, name='class-attendance'),
+]
