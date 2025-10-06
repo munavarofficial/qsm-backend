@@ -11,6 +11,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=lambda v: [s.strip() for s in v.split(',')])
 
+
 # Installed Apps
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -65,7 +66,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database (PostgreSQL)
+
+# # Database (PostgreSQL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -114,17 +116,20 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_COOKIE_NAME = 'sessionid'
 
 # ✅ CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", # Vite dev server
-]
+
 CORS_ALLOW_CREDENTIALS = True  # required for cookies
 
-# ✅ CSRF
+CORS_ALLOWED_ORIGINS = [
+    "https://www.qsm.edusafa.in",
+    "https://apiqsm.edusafa.in",
+]
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173"
+    "https://www.qsm.edusafa.in",
+    "https://apiqsm.edusafa.in",
 ]
 
+
 # ✅ Session & Cookie Settings
-SESSION_COOKIE_SAMESITE = "Lax"       # safer for localhost dev
-SESSION_COOKIE_SECURE = True   # must be True for HTTPS
-CSRF_COOKIE_SECURE = True      # must be True for HTTPS
+SESSION_COOKIE_SAMESITE = "None"  # allows cross-site if needed
+SESSION_COOKIE_SECURE = True       # required for HTTPS
+CSRF_COOKIE_SECURE = True          # required for HTTPS
