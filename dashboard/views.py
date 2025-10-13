@@ -4,13 +4,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 from datetime import datetime
 from datetime import date
-from .models import SchoolDetails,Notice,TopScorer,SchoolCommittee,Memorial,Gallery
-from .serializers import SchoolDetailsSerializer,NoticeSerializer,TopScorerSerializer,CommitteeSerializer,MemorialSerializer,GallerySerializer
-from students.models import Students,StudentAttendance,Standard,DailyRoutine
+from .models import SchoolDetails,Notice,SchoolCommittee,Memorial,Gallery
+from .serializers import SchoolDetailsSerializer,NoticeSerializer,CommitteeSerializer,MemorialSerializer,GallerySerializer
+from students.models import Students,StudentAttendance,Standard,DailyRoutine,Progress
 from students.serializers import StandardOnlySerializer
 from teachers.models import Teacher
 from teachers.serializers import TeacherOnlySerializer
 from principal.models import Principal
+from django.db.models import Sum
 
 
 @api_view(['GET'])
@@ -163,9 +164,50 @@ def class_attendance_summary(request, class_id):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def get_top_scorers(request):
-    top_scorers = TopScorer.objects.all()
-    serialized_data = TopScorerSerializer(top_scorers, many=True)
-    return Response(serialized_data.data, status=status.HTTP_200_OK)
+    """
+    Return top 3 students (based on total marks) from each class
+    along with their parent name and total marks.
+    """
+
+    # Annotate each student's total marks
+    student_totals = (
+        Progress.objects
+        .values(
+            'student',
+            'student__name',
+            'student__parent_name',
+            'student__std__std'
+        )
+        .annotate(total_marks=Sum('marks'))
+        .order_by('student__std__std', '-total_marks')
+    )
+
+    # Prepare data grouped by class
+    class_top_scorers = {}
+    for record in student_totals:
+        std_name = record['student__std__std']
+        if std_name not in class_top_scorers:
+            class_top_scorers[std_name] = []
+
+        # Limit to top 3 students per class
+        if len(class_top_scorers[std_name]) < 3:
+            class_top_scorers[std_name].append({
+                "student_name": record['student__name'],
+                "father_name": record['student__parent_name'],
+                "total_marks": record['total_marks']
+            })
+
+    # Convert dict into a list format for frontend
+    result = [
+        {
+            "class": std_name,
+            "top_scorers": class_top_scorers[std_name]
+        }
+        for std_name in sorted(class_top_scorers.keys())
+    ]
+
+    return Response(result)
+
 
 
 

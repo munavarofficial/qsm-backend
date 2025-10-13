@@ -10,7 +10,6 @@ class Management(models.Model):
     number = models.CharField(max_length=10)
     position = models.CharField(max_length=50)
     image = models.ImageField(upload_to="committee", blank=True, null=True)
-    reg_no = models.CharField(max_length=50, )
     password = models.CharField(max_length=128)  # hashed password
 
     def __str__(self):
@@ -20,8 +19,6 @@ class Management(models.Model):
         # Normalize fields to reduce login errors
         if self.name:
             self.name = self.name.strip().title()
-        if self.reg_no:
-            self.reg_no = self.reg_no.strip().upper()
 
         # Hash password if not hashed already
         if self.password and not self.password.startswith("pbkdf2_"):

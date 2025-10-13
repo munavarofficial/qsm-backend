@@ -965,7 +965,11 @@ def get_all_classs_with_students(request):
         return Response({"message": "Unauthorized"}, status=403)
 
     try:
-        classes = Standard.objects.prefetch_related('students').select_related('class_teacher').all()
+        classes = (
+            Standard.objects.prefetch_related('students')
+            .select_related('class_teacher')
+            .order_by('std')  # 👈 This line ensures fixed order 1,2,3,4...
+        )
 
         data = [
             {

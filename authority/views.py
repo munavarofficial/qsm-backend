@@ -34,13 +34,13 @@ def get_csrf_token(request):
 @csrf_protect
 @permission_classes([AllowAny])
 def management_login(request):
-    reg_no = request.data.get('reg_no', '').strip()
+    number = request.data.get('number', '').strip()
     password = request.data.get('password', '').strip()
 
-    if not reg_no or not password:
-        return Response({'error': 'Registration number and password required'}, status=status.HTTP_400_BAD_REQUEST)
+    if not number or not password:
+        return Response({'error': 'Number and password required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    management = Management.objects.filter(reg_no__iexact=reg_no).first()
+    management = Management.objects.filter(number__iexact=number).first()
     if not management or not management.check_password(password):
         # Same response → prevents username enumeration
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -57,12 +57,12 @@ def management_login(request):
             'id': management.id,
             'name': management.name,
             'number': management.number,
-            'reg_no': management.reg_no,
             'place': management.place,
             'position': management.position,
             'image': management.image.url if management.image else None,
         }
     }, status=status.HTTP_200_OK)
+
 
 
 @csrf_protect
@@ -98,6 +98,7 @@ def get_all_teachers_with_data(request):
 
 
 
+
 @permission_classes([AllowAny])
 @authentication_classes([SessionAuthentication])
 @api_view(['GET'])
@@ -110,7 +111,12 @@ def get_all_classs_with_students(request):
         return Response({"message": "Unauthorized"}, status=403)
 
     try:
-        classes = Standard.objects.prefetch_related('students').select_related('class_teacher').all()
+        # ✅ Order classes by standard number (assuming `std` is numeric or sortable)
+        classes = (
+            Standard.objects.prefetch_related('students')
+            .select_related('class_teacher')
+            .order_by('std')  # 👈 This line ensures fixed order 1,2,3,4...
+        )
 
         data = [
             {
@@ -139,7 +145,6 @@ def get_all_classs_with_students(request):
         return Response(data)
 
     except Exception as e:
-        # log the exact error to console
         return Response({"error": str(e)}, status=500)
 
 

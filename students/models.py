@@ -59,7 +59,7 @@ class Students(models.Model):
     phone_no = models.CharField(max_length=12)
     place = models.CharField(max_length=50)
     reg_no = models.CharField(max_length=10, unique=True)
-    password=models.CharField(max_length=10 )
+    password=models.CharField(max_length=128 )
 
     def __str__(self):
         return f"{self.name},{self.std} {self.place}"
