@@ -115,7 +115,7 @@ def get_all_classs_with_students(request):
         classes = (
             Standard.objects.prefetch_related('students')
             .select_related('class_teacher')
-            .order_by('std')  # 👈 This line ensures fixed order 1,2,3,4...
+            .order_by('std')  # 👈 This line ensures fixed order 1,2,3,4,5...
         )
 
         data = [
