@@ -29,7 +29,7 @@ class Teacher(models.Model):
     image = models.ImageField(upload_to='teachers', blank=True, null=True)
     place = models.CharField(max_length=50)
     reg_no = models.CharField(max_length=10, unique=True)
-    password=models.CharField(max_length=15)
+    password = models.CharField(max_length=128)  # hashed password
 
     def __str__(self):
         return f"{self.name}, {self.place}"

@@ -6,7 +6,7 @@ from django.contrib.auth.hashers import make_password, check_password
 
 class Principal(models.Model):
     name = models.CharField(max_length=50)
-    password=models.CharField(max_length=15)
+    password = models.CharField(max_length=128)  # hashed password
     phone_no=models.CharField(max_length=12)
     image = models.ImageField(upload_to='principal', blank=True, null=True)
     place = models.CharField(max_length=50)

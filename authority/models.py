@@ -11,6 +11,8 @@ class Management(models.Model):
     position = models.CharField(max_length=50)
     image = models.ImageField(upload_to="committee", blank=True, null=True)
     password = models.CharField(max_length=128)  # hashed password
+    reg_no = models.CharField(max_length=50, null=True, blank=True)
+
 
     def __str__(self):
         return f"{self.name} - {self.place} - {self.position}"
